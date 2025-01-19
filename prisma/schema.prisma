@@ -13,17 +13,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Roles {
+   id         Int @id @default(autoincrement())
+   name        String
+   description String
+   createdAt  DateTime @default(now())
+   updatedAt  DateTime @updatedAt 
+   users  Users[]
+}
+
+model Users {
     id        Int   @id @default(autoincrement())
+    roleId    Int
+    role    Roles @relation(fields: [roleId], references: [id])
     email     String   @unique
     password  String
     name      String?
-    createdAt String?
-    updatedAt String?
-}
-
-model userInfo {
-    id        Int   @id @default(autoincrement())
-    userId    Int
-    info      Json
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }

@@ -16,24 +16,25 @@ export class AuthService {
     async signUp(data: any){
         try { 
 
-            const isExist = await this.prismaService.user.findUnique({
+            const isExist = await this.prismaService.users.findUnique({
                 where: {
                     email: data.email
                 }
             })
             // llll
-
+            console.log('asd',isExist)
             if(isExist){
                 throw 'User already exists'
             } else{
 
-                const newUser = await this.prismaService.user.create({
+                const newUser = await this.prismaService.users.create({
                     data: {
+                        roleId: 1,
                         email : data.email, 
                         password: '', 
                         name : data.email, 
-                        createdAt: Date(), 
-                        updatedAt: Date()
+                        createdAt: new Date(), 
+                        updatedAt: new Date()
                     }
                 })
                 
@@ -42,13 +43,14 @@ export class AuthService {
                 const HashedPass = await brcrypt.hash(data.password, 10)
 
                 if(HashedPass){
-                    await this.prismaService.user.update({
+                  
+                    await this.prismaService.users.update({
                         where: {
                             id: newUser.id
                         },
                         data: {
                             password: HashedPass,
-                            createdAt: Date()
+                            createdAt: new Date()
                         }
                     })
                 }
@@ -89,7 +91,7 @@ export class AuthService {
     
       async login(data: any) {
         try {
-            const user = await this.prismaService.user.findUnique({
+            const user = await this.prismaService.users.findUnique({
                 where: {
                   email: data.email,
                 }
